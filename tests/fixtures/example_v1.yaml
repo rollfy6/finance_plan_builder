@@ -1,0 +1,297 @@
+schema_version: 1
+name: Example household plan
+currency: USD
+start: "2026-01"
+base_year: 2026
+inflation: 0.03
+cash_return: 0.0
+
+persons:
+  - id: alex
+    name: Alex
+    birth_year: 1992
+  - id: sam
+    name: Sam
+    birth_year: 1994
+
+eras:
+  # ---------------------------------------------------------------
+  - id: early_career
+    name: Early career, renting
+    start: "2026-01"
+    end: "2027-12"
+    debt_strategy: avalanche
+    # Keep 60% of surplus as cash so the 2028 closing costs are fundable.
+    surplus_to_debt: 0.4
+    incomes:
+      - id: alex_salary
+        label: Alex salary
+        owner: alex
+        gross_annual: 98000
+        annual_raise: 0.03
+      - id: sam_salary
+        label: Sam salary
+        owner: sam
+        gross_annual: 64000
+        annual_raise: 0.025
+    expenses:
+      - id: groceries
+        label: Groceries
+        category: food
+        monthly: 900
+      - id: utilities
+        label: Utilities and internet
+        category: housing
+        monthly: 260
+      - id: rent
+        label: Rent
+        category: housing
+        monthly: 1850
+      - id: transport
+        label: Car insurance, fuel, transit
+        category: transport
+        monthly: 350
+      - id: insurance
+        label: Health and other insurance
+        category: insurance
+        monthly: 240
+      - id: discretionary
+        label: Dining, subscriptions, misc
+        category: lifestyle
+        monthly: 1100
+    debts:
+      - id: student_loan
+        label: Federal student loan
+        owner: alex
+        opening_balance: 32000
+        apr: 0.055
+        minimum_payment: 345
+        convention: monthly_apr
+      - id: credit_card
+        label: Credit card
+        owner: sam
+        opening_balance: 4200
+        apr: 0.2499
+        minimum_payment: 105
+        convention: daily_apr
+      - id: car_loan
+        label: Car loan
+        opening_balance: 18000
+        apr: 0.069
+        minimum_payment: 360
+        convention: monthly_apr
+    assets:
+      - id: emergency_fund
+        label: High-yield savings
+        account_type: cash
+        opening_balance: 15000
+        annual_return: 0.04
+        monthly_contribution: 300
+      - id: house_fund
+        label: House down payment savings
+        account_type: taxable
+        opening_balance: 9000
+        annual_return: 0.045
+        monthly_contribution: 1200
+      - id: alex_401k
+        label: Alex 401(k)
+        owner: alex
+        account_type: traditional_401k
+        opening_balance: 42000
+        annual_return: 0.065
+        monthly_contribution: 1000
+      - id: sam_roth
+        label: Sam Roth IRA
+        owner: sam
+        account_type: roth_ira
+        opening_balance: 9000
+        annual_return: 0.065
+        monthly_contribution: 580
+    events:
+      - id: bonus_2026
+        label: Year-end bonus (Alex)
+        month: "2026-12"
+        kind: one_time_income
+        amount: 8000
+
+  # ---------------------------------------------------------------
+  - id: home_purchase
+    name: Buying a home
+    start: "2028-01"
+    end: "2033-12"
+    debt_strategy: snowball
+    surplus_to_debt: 0.4
+    incomes:
+      - id: alex_salary_2
+        label: Alex salary
+        owner: alex
+        gross_annual: 118000
+        annual_raise: 0.03
+      - id: sam_salary_2
+        label: Sam salary
+        owner: sam
+        gross_annual: 72000
+        annual_raise: 0.025
+    expenses:
+      - id: groceries
+        label: Groceries
+        category: food
+        monthly: 1050
+      - id: utilities
+        label: Utilities and internet
+        category: housing
+        monthly: 340
+      - id: property_tax
+        label: Property tax (escrow)
+        category: housing
+        monthly: 450
+      - id: homeowners_insurance
+        label: Homeowners insurance
+        category: insurance
+        monthly: 180
+      - id: transport
+        label: Car insurance, fuel, transit
+        category: transport
+        monthly: 380
+      - id: insurance
+        label: Health and other insurance
+        category: insurance
+        monthly: 260
+      - id: discretionary
+        label: Dining, subscriptions, misc
+        category: lifestyle
+        monthly: 1200
+    debts:
+      - id: mortgage
+        label: Primary mortgage (30y fixed)
+        opening_balance: 380000
+        apr: 0.0625
+        minimum_payment: 2340
+        convention: monthly_apr
+    assets:
+      - id: house_fund
+        label: House down payment savings
+        account_type: taxable
+        annual_return: 0.045
+        monthly_contribution: 0
+      - id: home
+        label: Home (purchase price 440k)
+        account_type: real_estate
+        opening_balance: 440000
+        annual_return: 0.03
+    events:
+      - id: down_payment_withdrawal
+        label: Withdraw down payment from house fund
+        month: "2028-01"
+        kind: asset_withdrawal
+        amount: 60000
+        target_id: house_fund
+      - id: down_payment_paid
+        label: Down payment paid to seller
+        month: "2028-01"
+        kind: one_time_expense
+        amount: 60000
+      - id: closing_costs
+        label: Closing costs
+        month: "2028-01"
+        kind: one_time_expense
+        amount: 9500
+      - id: car_payoff
+        label: Pay off car loan with bonus
+        month: "2028-03"
+        kind: lump_sum_debt_payment
+        amount: 9000
+        target_id: car_loan
+
+  # ---------------------------------------------------------------
+  - id: family_peak
+    name: Family, refinanced, peak earning
+    start: "2034-01"
+    end: null  # open-ended
+    debt_strategy: fixed
+    debt_priority: [credit_card, mortgage]
+    assumptions:
+      inflation: 0.025
+    incomes:
+      - id: alex_salary_3
+        label: Alex salary
+        owner: alex
+        gross_annual: 150000
+        annual_raise: 0.025
+      - id: sam_salary_3
+        label: Sam salary
+        owner: sam
+        gross_annual: 92000
+        annual_raise: 0.025
+    expenses:
+      - id: groceries
+        label: Groceries
+        category: food
+        monthly: 1400
+      - id: childcare
+        label: Childcare
+        category: family
+        monthly: 1800
+      - id: utilities
+        label: Utilities and internet
+        category: housing
+        monthly: 360
+      - id: property_tax
+        label: Property tax (escrow)
+        category: housing
+        monthly: 480
+      - id: homeowners_insurance
+        label: Homeowners insurance
+        category: insurance
+        monthly: 190
+      - id: transport
+        label: Two cars, insurance, fuel
+        category: transport
+        monthly: 620
+      - id: insurance
+        label: Health and other insurance
+        category: insurance
+        monthly: 340
+      - id: discretionary
+        label: Dining, activities, misc
+        category: lifestyle
+        monthly: 1500
+    debts:
+      # Refinance: same account, restated terms, no opening balance.
+      - id: mortgage
+        label: Primary mortgage (refinanced)
+        apr: 0.0525
+        minimum_payment: 2250
+        convention: monthly_apr
+      - id: credit_card
+        label: Credit card
+        owner: sam
+        apr: 0.2499
+        minimum_payment: 105
+        convention: daily_apr
+    assets:
+      - id: alex_401k
+        label: Alex 401(k)
+        owner: alex
+        account_type: traditional_401k
+        annual_return: 0.065
+        monthly_contribution: 1500
+      - id: sam_roth
+        label: Sam Roth IRA
+        owner: sam
+        account_type: roth_ira
+        annual_return: 0.065
+        monthly_contribution: 580
+      - id: college_fund
+        label: 529 college savings
+        account_type: taxable
+        opening_balance: 0
+        annual_return: 0.06
+        monthly_contribution: 300
+    events:
+      - id: college_seed
+        label: Seed college fund from savings
+        month: "2034-01"
+        kind: lump_sum_asset_contribution
+        amount: 20000
+        target_id: college_fund

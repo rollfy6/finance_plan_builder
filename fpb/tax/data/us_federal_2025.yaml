@@ -1,0 +1,46 @@
+# US federal individual income tax and payroll parameters, tax year 2025.
+# Source: IRS Rev. Proc. 2024-40 (brackets, SS wage base), One Big Beautiful Bill
+# Act (standard deduction), IRS Notice 2024-80 (401(k), IRA catch-up), Rev. Proc.
+# 2024-25 (HSA). Filing status keys: single, mfj.
+tax_year: 2025
+std_deduction:
+  single: 15750
+  mfj: 31500
+brackets:
+  single:
+    - [0, 0.10]
+    - [11925, 0.12]
+    - [48475, 0.22]
+    - [103350, 0.24]
+    - [197300, 0.32]
+    - [250525, 0.35]
+    - [626350, 0.37]
+  mfj:
+    - [0, 0.10]
+    - [23850, 0.12]
+    - [96950, 0.22]
+    - [206700, 0.24]
+    - [394600, 0.32]
+    - [501050, 0.35]
+    - [751600, 0.37]
+social_security:
+  rate: 0.062
+  wage_base: 176100
+medicare:
+  rate: 0.0145
+  additional_rate: 0.009
+  additional_threshold:
+    single: 200000
+    mfj: 250000
+limits:
+  "401k": 23500
+  "401k_catch_up": 7500
+  "ira": 7000
+  "ira_catch_up": 1000
+  "hsa_self": 4300
+  "hsa_family": 8550
+  "hsa_catch_up": 1000
+catch_up_age:
+  "401k": 50
+  "ira": 50
+  "hsa": 55

@@ -1,0 +1,50 @@
+/* Plan timeline. Colors use currentColor and translucent fills so it reads in light and dark themes. */
+.fpb-timeline { font: 13px/1.4 system-ui, sans-serif; color: inherit; display: flex; flex-direction: column; gap: 8px; }
+.fpb-timeline .fpb-error { display: none; padding: 6px 10px; border-radius: 6px; background: rgba(220, 38, 38, 0.15); color: #dc2626; white-space: pre-wrap; }
+.fpb-timeline .fpb-error.on { display: block; }
+.fpb-body { display: flex; gap: 12px; align-items: flex-start; }
+.fpb-pane { flex: 1 1 auto; min-width: 0; overflow-x: auto; border: 1px solid rgba(127, 127, 127, 0.3); border-radius: 6px; }
+.fpb-grid { position: relative; }
+.fpb-row, .fpb-section { display: flex; height: 28px; align-items: stretch; border-bottom: 1px solid rgba(127, 127, 127, 0.15); }
+.fpb-section { height: 22px; background: rgba(127, 127, 127, 0.08); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; align-items: center; }
+.fpb-head { height: 38px; font-size: 11px; }
+.fpb-head .fpb-track { height: 38px; }
+.fpb-q { position: absolute; top: 18px; height: 18px; line-height: 18px; text-align: center; font-size: 10px; opacity: 0.75; box-sizing: border-box; }
+.fpb-year { position: absolute; top: 0; height: 18px; line-height: 18px; padding-left: 4px; font-size: 11px; font-weight: 600; border-left: 1px solid rgba(127, 127, 127, 0.5); box-sizing: border-box; }
+.fpb-section > .fpb-label { background: inherit; }
+.fpb-bar-text { display: inline-flex; gap: 6px; align-items: baseline; }
+.fpb-bar-val { opacity: 0.9; font-size: 10px; }
+.fpb-marker-val { position: absolute; left: 12px; top: 0; white-space: nowrap; font-size: 11px; line-height: 16px; pointer-events: none; }
+.fpb-label { position: sticky; left: 0; z-index: 2; flex: 0 0 240px; width: 240px; padding: 4px 8px; background: Canvas; border-right: 1px solid rgba(127, 127, 127, 0.3); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; cursor: pointer; box-sizing: border-box; }
+.fpb-label.sel { font-weight: 700; text-decoration: underline; }
+.fpb-track { position: relative; flex: 0 0 auto; }
+.fpb-band { position: absolute; top: 3px; bottom: 3px; border-radius: 4px; background: rgba(59, 130, 246, 0.12); font-size: 10px; padding: 2px 4px; overflow: hidden; white-space: nowrap; }
+.fpb-bar { position: absolute; top: 4px; bottom: 4px; border-radius: 4px; padding: 0 6px; font-size: 11px; line-height: 20px; overflow: hidden; white-space: nowrap; color: #fff; cursor: grab; user-select: none; box-sizing: border-box; min-width: 4px; }
+.fpb-bar.open { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.fpb-bar.incomes { background: #16a34a; }
+.fpb-bar.expenses { background: #ea580c; }
+.fpb-bar.strategies { background: #7c3aed; }
+.fpb-bar.assumptions { background: #0891b2; }
+.fpb-bar.debts { background: #dc2626; }
+.fpb-bar.assets { background: #2563eb; }
+.fpb-bar.account { opacity: 0.85; }
+.fpb-bar.sel { outline: 2px solid currentColor; outline-offset: 1px; }
+.fpb-handle { position: absolute; top: 0; bottom: 0; width: 6px; cursor: ew-resize; }
+.fpb-handle.l { left: 0; }
+.fpb-handle.r { right: 0; }
+.fpb-marker { position: absolute; top: 6px; width: 8px; height: 16px; border-radius: 2px; background: #db2777; cursor: grab; }
+.fpb-marker.sel { outline: 2px solid currentColor; }
+.fpb-change { position: absolute; top: 2px; bottom: 2px; width: 2px; background: #f59e0b; pointer-events: none; }
+.fpb-empty { padding: 4px 10px; opacity: 0.6; font-style: italic; }
+.fpb-panel { flex: 0 0 340px; width: 340px; max-height: 620px; overflow-y: auto; padding: 8px 12px; border: 1px solid rgba(127, 127, 127, 0.3); border-radius: 6px; }
+.fpb-panel h3 { margin: 0 0 2px; font-size: 14px; }
+.fpb-panel h4 { margin: 12px 0 4px; font-size: 12px; }
+.fpb-id { font-family: ui-monospace, monospace; font-size: 11px; opacity: 0.6; margin-bottom: 8px; }
+.fpb-hint { opacity: 0.7; }
+.fpb-field { display: grid; grid-template-columns: 130px 1fr; gap: 6px; align-items: center; margin: 4px 0; }
+.fpb-field span { text-transform: capitalize; opacity: 0.85; }
+.fpb-field input, .fpb-field select, .fpb-change-row input { width: 100%; box-sizing: border-box; padding: 3px 5px; border: 1px solid rgba(127, 127, 127, 0.4); border-radius: 4px; background: transparent; color: inherit; font: inherit; }
+.fpb-field input[type="checkbox"] { width: auto; justify-self: start; }
+.fpb-change-row { display: grid; grid-template-columns: 78px 1fr 1fr auto; gap: 4px; margin: 4px 0; }
+.fpb-change-row button, .fpb-add { font: inherit; padding: 2px 6px; border: 1px solid rgba(127, 127, 127, 0.4); border-radius: 4px; background: transparent; color: inherit; cursor: pointer; }
+.fpb-add { margin-top: 6px; }

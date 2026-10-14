@@ -1,0 +1,320 @@
+# Household plan for Brittany and Mark. Start is June 2023, the month of the mortgage.
+# All figures are placeholders except where noted. Replace balances with statements
+# using `python -m fpb.actuals template` and `python -m fpb.actuals import`.
+schema_version: 2
+name: Brittany and Mark
+currency: USD
+start: "2023-06"
+base_year: 2023
+inflation: 0.03
+cash_return: 0.0
+opening_cash: 0
+
+persons:
+  - id: brittany
+    name: Brittany
+    birth_year: 1991
+  - id: mark
+    name: Mark
+    birth_year: 1989
+
+# Eras are labels for the timeline and charts. They do not change any calculation.
+eras:
+  - id: first_home
+    label: First home, mortgage years
+    start: "2023-06"
+    end: "2027-12"
+  - id: mid_career
+    label: Mid career
+    start: "2028-01"
+    end: "2033-12"
+  - id: family_peak
+    label: Family, refinanced, peak earning
+    start: "2034-01"
+
+# Pay-down rules. Each window selects the strategy for its months.
+strategies:
+  - id: first_home_strategy
+    label: "First home: debt strategy"
+    start: "2023-06"
+    end: "2027-12"
+    debt_strategy: avalanche
+    surplus_to_debt: 0.4
+  - id: mid_career_strategy
+    label: "Mid career: debt strategy"
+    start: "2028-01"
+    end: "2033-12"
+    debt_strategy: snowball
+    surplus_to_debt: 0.4
+  - id: family_peak_strategy
+    label: "Family: debt strategy"
+    start: "2034-01"
+    debt_strategy: fixed
+    debt_priority: [credit_card, mortgage]
+
+assumptions:
+  - id: family_peak_assumptions
+    label: "Family: inflation"
+    start: "2034-01"
+    inflation: 0.025
+
+incomes:
+  - id: mark_salary_1
+    label: Mark salary
+    owner: mark
+    start: "2023-06"
+    end: "2027-12"
+    gross_annual: 98000
+    annual_raise: 0.03
+  - id: brittany_salary_1
+    label: Brittany salary
+    owner: brittany
+    start: "2023-06"
+    end: "2027-12"
+    gross_annual: 64000
+    annual_raise: 0.025
+  - id: mark_salary_2
+    label: Mark salary
+    owner: mark
+    start: "2028-01"
+    end: "2033-12"
+    gross_annual: 118000
+    annual_raise: 0.03
+  - id: brittany_salary_2
+    label: Brittany salary
+    owner: brittany
+    start: "2028-01"
+    end: "2033-12"
+    gross_annual: 72000
+    annual_raise: 0.025
+  - id: mark_salary_3
+    label: Mark salary
+    owner: mark
+    start: "2034-01"
+    gross_annual: 150000
+    annual_raise: 0.025
+  - id: brittany_salary_3
+    label: Brittany salary
+    owner: brittany
+    start: "2034-01"
+    gross_annual: 92000
+    annual_raise: 0.025
+
+expenses:
+  - id: groceries_1
+    label: Groceries
+    category: food
+    start: "2023-06"
+    end: "2027-12"
+    monthly: 900
+  - id: utilities_1
+    label: Utilities and internet
+    category: housing
+    start: "2023-06"
+    end: "2027-12"
+    monthly: 260
+  - id: property_tax_1
+    label: Property tax (escrow)
+    category: housing
+    start: "2023-06"
+    end: "2027-12"
+    monthly: 450
+  - id: homeowners_insurance_1
+    label: Homeowners insurance
+    category: insurance
+    start: "2023-06"
+    end: "2027-12"
+    monthly: 180
+  - id: transport_1
+    label: Car insurance, fuel, transit
+    category: transport
+    start: "2023-06"
+    end: "2027-12"
+    monthly: 350
+  - id: health_insurance_1
+    label: Health and other insurance
+    category: insurance
+    start: "2023-06"
+    end: "2027-12"
+    monthly: 240
+  - id: discretionary_1
+    label: Dining, subscriptions, misc
+    category: lifestyle
+    start: "2023-06"
+    end: "2027-12"
+    monthly: 1100
+  - id: groceries_2
+    label: Groceries
+    category: food
+    start: "2028-01"
+    end: "2033-12"
+    monthly: 1050
+  - id: utilities_2
+    label: Utilities and internet
+    category: housing
+    start: "2028-01"
+    end: "2033-12"
+    monthly: 340
+  - id: property_tax_2
+    label: Property tax (escrow)
+    category: housing
+    start: "2028-01"
+    end: "2033-12"
+    monthly: 450
+  - id: homeowners_insurance_2
+    label: Homeowners insurance
+    category: insurance
+    start: "2028-01"
+    end: "2033-12"
+    monthly: 180
+  - id: transport_2
+    label: Car insurance, fuel, transit
+    category: transport
+    start: "2028-01"
+    end: "2033-12"
+    monthly: 380
+  - id: health_insurance_2
+    label: Health and other insurance
+    category: insurance
+    start: "2028-01"
+    end: "2033-12"
+    monthly: 260
+  - id: discretionary_2
+    label: Dining, subscriptions, misc
+    category: lifestyle
+    start: "2028-01"
+    end: "2033-12"
+    monthly: 1200
+  - id: groceries_3
+    label: Groceries
+    category: food
+    start: "2034-01"
+    monthly: 1400
+  - id: childcare_3
+    label: Childcare
+    category: family
+    start: "2034-01"
+    monthly: 1800
+  - id: utilities_3
+    label: Utilities and internet
+    category: housing
+    start: "2034-01"
+    monthly: 360
+  - id: property_tax_3
+    label: Property tax (escrow)
+    category: housing
+    start: "2034-01"
+    monthly: 480
+  - id: homeowners_insurance_3
+    label: Homeowners insurance
+    category: insurance
+    start: "2034-01"
+    monthly: 190
+  - id: transport_3
+    label: Two cars, insurance, fuel
+    category: transport
+    start: "2034-01"
+    monthly: 620
+  - id: health_insurance_3
+    label: Health and other insurance
+    category: insurance
+    start: "2034-01"
+    monthly: 340
+  - id: discretionary_3
+    label: Dining, activities, misc
+    category: lifestyle
+    start: "2034-01"
+    monthly: 1500
+
+debts:
+  - id: mortgage
+    label: Primary mortgage (30y fixed)
+    start: "2023-06"
+    opening_balance: 380000
+    apr: 0.0625
+    minimum_payment: 2340
+    convention: monthly_apr
+    changes:
+      # Refinance in 2034: new rate and payment, same account and balance.
+      - month: "2034-01"
+        apr: 0.0525
+        minimum_payment: 2250
+  - id: car_loan
+    label: Car loan
+    start: "2023-06"
+    opening_balance: 18000
+    apr: 0.069
+    minimum_payment: 360
+    convention: monthly_apr
+  - id: student_loan
+    label: Federal student loan
+    owner: mark
+    start: "2023-06"
+    opening_balance: 32000
+    apr: 0.055
+    minimum_payment: 345
+    convention: monthly_apr
+  - id: credit_card
+    label: Credit card
+    owner: brittany
+    start: "2023-06"
+    opening_balance: 4200
+    apr: 0.2499
+    minimum_payment: 105
+    convention: daily_apr
+
+assets:
+  - id: home
+    label: Home
+    account_type: real_estate
+    start: "2023-06"
+    opening_balance: 440000
+    annual_return: 0.03
+  - id: emergency_fund
+    label: High-yield savings
+    account_type: cash
+    start: "2023-06"
+    opening_balance: 15000
+    annual_return: 0.04
+    monthly_contribution: 300
+  - id: joint_brokerage
+    label: Joint brokerage
+    account_type: taxable
+    start: "2023-06"
+    opening_balance: 9000
+    annual_return: 0.045
+    monthly_contribution: 1200
+  - id: mark_401k
+    label: Mark 401(k)
+    owner: mark
+    account_type: traditional_401k
+    start: "2023-06"
+    opening_balance: 42000
+    annual_return: 0.065
+    monthly_contribution: 1000
+    changes:
+      - month: "2034-01"
+        monthly_contribution: 1500
+  - id: brittany_roth_ira
+    label: Brittany Roth IRA
+    owner: brittany
+    account_type: roth_ira
+    start: "2023-06"
+    opening_balance: 9000
+    annual_return: 0.065
+    monthly_contribution: 580
+  - id: college_fund
+    label: 529 college savings
+    account_type: taxable
+    start: "2034-01"
+    opening_balance: 0
+    annual_return: 0.06
+    monthly_contribution: 300
+
+events:
+  - id: college_seed
+    label: Seed college fund from savings
+    month: "2034-01"
+    kind: lump_sum_asset_contribution
+    amount: 20000
+    target_id: college_fund

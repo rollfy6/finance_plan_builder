@@ -1,0 +1,30 @@
+[project]
+name = "finance-plan-builder"
+version = "0.1.0"
+description = "Medium- to long-term household financial planning with eras, taxes, and debt payoff"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.6",
+    "pyyaml>=6.0",
+    "polars>=0.20",
+    "plotly>=5.18",
+    "marimo>=0.8",
+    "anywidget>=0.9",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["fpb*"]
+
+[tool.setuptools.package-data]
+"fpb.tax" = ["data/*.yaml"]
+"fpb.ui" = ["*.js", "*.css"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

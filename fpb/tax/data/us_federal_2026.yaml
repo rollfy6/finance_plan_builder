@@ -1,0 +1,47 @@
+# US federal individual income tax and payroll parameters, tax year 2026.
+# Source: IRS Rev. Proc. 2025-32 (brackets, standard deduction, SS wage base),
+# IRS Notice 2025-67 (401(k), IRA), Rev. Proc. 2025-19 (HSA), SSA/IRS
+# Additional Medicare Tax (thresholds are statutory and not indexed).
+# Filing status keys: single, mfj. Head of household is not modeled.
+tax_year: 2026
+std_deduction:
+  single: 16100
+  mfj: 32200
+brackets:  # [threshold of taxable income, marginal rate]
+  single:
+    - [0, 0.10]
+    - [12400, 0.12]
+    - [50400, 0.22]
+    - [105700, 0.24]
+    - [201775, 0.32]
+    - [256225, 0.35]
+    - [640600, 0.37]
+  mfj:
+    - [0, 0.10]
+    - [24800, 0.12]
+    - [100800, 0.22]
+    - [211400, 0.24]
+    - [403550, 0.32]
+    - [512450, 0.35]
+    - [768700, 0.37]
+social_security:
+  rate: 0.062
+  wage_base: 184500
+medicare:
+  rate: 0.0145
+  additional_rate: 0.009
+  additional_threshold:
+    single: 200000
+    mfj: 250000
+limits:  # annual contribution limits, employee/individual
+  "401k": 24500
+  "401k_catch_up": 8000
+  "ira": 7500
+  "ira_catch_up": 1100
+  "hsa_self": 4400
+  "hsa_family": 8750
+  "hsa_catch_up": 1000
+catch_up_age:
+  "401k": 50
+  "ira": 50
+  "hsa": 55
