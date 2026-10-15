@@ -7,6 +7,7 @@ so no binary-float noise leaks in.
 
 from __future__ import annotations
 
+import json
 from decimal import Decimal
 from pathlib import Path
 from typing import Any
@@ -76,3 +77,18 @@ def save_plan(plan: Plan, path: str | Path) -> None:
     with open(tmp, "w", encoding="utf-8") as fh:
         yaml.safe_dump(plan_to_dict(plan), fh, sort_keys=False, allow_unicode=True)
     tmp.replace(target)
+
+
+def plan_to_json(plan: Plan) -> str:
+    """Full plan as JSON text. Used for the private data file and hosted downloads."""
+    return json.dumps(plan_to_dict(plan), indent=2) + "\n"
+
+
+def plan_from_json(text: str) -> Plan:
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"not valid JSON: {exc}") from exc
+    if not isinstance(data, dict):
+        raise ValueError("top level must be a JSON object")
+    return plan_from_dict(data)

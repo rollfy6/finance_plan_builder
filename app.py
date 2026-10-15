@@ -25,12 +25,20 @@ def _():
     from fpb.deflator import view
     from fpb.engine import simulate
     from fpb.metrics import annual, summary
-    from fpb.storage import load_plan, load_plan_text, plan_from_dict, plan_to_dict, save_plan
+    from fpb.storage import (
+        load_plan,
+        load_plan_text,
+        plan_from_dict,
+        plan_from_json,
+        plan_to_dict,
+        plan_to_json,
+        save_plan,
+    )
     from fpb.ui import PlanTimeline
     from fpb.viz import plots
 
     # Local runs read and write plans/. The WebAssembly export has no plans folder,
-    # so it uses the bundled example and cannot save (read-only).
+    # so it uses the bundled example and cannot save to disk (read-only).
     try:
         PLAN_DIR = Path(__file__).resolve().parent / "plans"
     except NameError:
@@ -47,7 +55,9 @@ def _():
         load_plan_text,
         mo,
         plan_from_dict,
+        plan_from_json,
         plan_to_dict,
+        plan_to_json,
         plots,
         save_plan,
         simulate,
@@ -63,8 +73,9 @@ def _(EDITABLE, PLAN_DIR, mo):
     horizon_year = mo.ui.slider(start=2030, stop=2080, step=1, value=2050, label="Horizon (year)")
     real_toggle = mo.ui.switch(value=False, label="Real (inflation-adjusted) dollars")
     reset_button = mo.ui.button(label="Reset to saved file")
+    private_upload = mo.ui.file(filetypes=[".json"], label="Load my data (private .json)")
     mo.hstack([plan_picker, horizon_year, real_toggle, reset_button], justify="start", gap=2)
-    return horizon_year, plan_picker, real_toggle, reset_button
+    return horizon_year, plan_picker, private_upload, real_toggle, reset_button
 
 
 @app.cell
@@ -76,18 +87,32 @@ def _(
     load_plan,
     load_plan_text,
     mo,
+    plan_from_json,
     plan_picker,
     plan_to_dict,
+    private_upload,
     reset_button,
 ):
-    # Re-creating the widget resets it to the file on disk (picker change or reset).
+    # Re-creating the widget resets it to the chosen source (picker, reset, or upload).
     _ = reset_button.value
+    _source = "Bundled example (read-only copy)" if not EDITABLE else f"plans/{plan_picker.value}"
+    _start = None
+    _error = None
     if EDITABLE:
         _start = plan_to_dict(load_plan(PLAN_DIR / plan_picker.value))
     else:
         _start = plan_to_dict(load_plan_text(EXAMPLE_PLAN))
+    if private_upload.value:
+        try:
+            _private = plan_from_json(private_upload.value[0].contents.decode("utf-8"))
+            _start = plan_to_dict(_private)
+            _source = "Using your private file"
+        except Exception as exc:  # shown to the user; the example stays loaded
+            _error = str(exc)
     timeline = mo.ui.anywidget(PlanTimeline(plan=_start))
-    timeline
+    _banner = mo.callout(mo.md(f"**Data source:** {_source}"), kind="success" if private_upload.value and _error is None else "neutral")
+    _err_view = mo.callout(mo.md(f"**Could not load that file:** {_error}"), kind="danger") if _error else mo.md("")
+    mo.vstack([private_upload, _err_view, _banner, timeline])
     return (timeline,)
 
 
@@ -107,17 +132,29 @@ def _(mo, plan_from_dict, timeline):
 
 
 @app.cell
-def _(EDITABLE, PLAN_DIR, mo, plan, plan_picker, save_plan):
+def _(EDITABLE, PLAN_DIR, mo, plan, plan_picker, plan_to_json, private_upload, save_plan):
+    # Saving: local runs with no private file can write back to plans/.
+    # Otherwise the browser downloads the JSON and nothing is written anywhere.
+    _private_loaded = bool(private_upload.value)
+    _json_bytes = plan_to_json(plan).encode("utf-8")
+    _download = mo.download(
+        data=_json_bytes,
+        filename="my_plan.private.json",
+        mimetype="application/json",
+        label="Download my data (.json)",
+    )
     _path = PLAN_DIR / plan_picker.value
-    save_button = mo.ui.button(
-        label="Save plan to YAML",
+    _save = mo.ui.button(
+        label="Save plan to plans/",
         kind="success",
         on_click=lambda _: save_plan(plan, _path),
     )
-    _note = mo.md("") if EDITABLE else mo.md(
-        "*Read-only copy. Changes are not saved. Run the app locally to save plans.*"
+    _note = mo.md(
+        "*Changes are not saved on the server. Download the file to keep them, "
+        "and keep it on your own computer.*"
     )
-    mo.hstack([save_button, _note]) if EDITABLE else _note
+    _items = [_save, _download] if (EDITABLE and not _private_loaded) else [_download, _note]
+    mo.hstack(_items, justify="start", gap=2)
     return
 
 
