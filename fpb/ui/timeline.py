@@ -9,16 +9,14 @@ message when the plan is not valid. Callers should read ``plan`` through
 
 from __future__ import annotations
 
-import pathlib
 from typing import Any
 
 import anywidget
 import traitlets
 from pydantic import ValidationError
 
+from fpb._embedded import TIMELINE_CSS, TIMELINE_ESM
 from fpb.storage import plan_from_dict
-
-_HERE = pathlib.Path(__file__).resolve().parent
 
 
 def validate_plan_dict(data: dict[str, Any]) -> str:
@@ -35,8 +33,10 @@ def validate_plan_dict(data: dict[str, Any]) -> str:
 
 
 class PlanTimeline(anywidget.AnyWidget):
-    _esm = _HERE / "timeline.js"
-    _css = _HERE / "timeline.css"
+    # Bundled as strings (see scripts/embed_assets.py) so the widget also works in
+    # the WebAssembly export, which does not ship JS or CSS files.
+    _esm = TIMELINE_ESM
+    _css = TIMELINE_CSS
 
     plan = traitlets.Dict().tag(sync=True)
     error = traitlets.Unicode("").tag(sync=True)

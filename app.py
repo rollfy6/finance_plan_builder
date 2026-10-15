@@ -1,3 +1,14 @@
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#     "pydantic>=2.6",
+#     "pyyaml>=6.0",
+#     "polars>=0.20",
+#     "plotly>=5.18",
+#     "anywidget>=0.9",
+#     "marimo>=0.8",
+# ]
+# ///
 import marimo
 
 __generated_with = "0.25.1"
@@ -9,21 +20,31 @@ def _():
     import marimo as mo
     from pathlib import Path
 
+    from fpb._embedded import EXAMPLE_PLAN
     from fpb.actuals import coverage
     from fpb.deflator import view
     from fpb.engine import simulate
     from fpb.metrics import annual, summary
-    from fpb.storage import load_plan, plan_from_dict, plan_to_dict, save_plan
+    from fpb.storage import load_plan, load_plan_text, plan_from_dict, plan_to_dict, save_plan
     from fpb.ui import PlanTimeline
     from fpb.viz import plots
 
-    PLAN_DIR = Path(__file__).resolve().parent / "plans"
+    # Local runs read and write plans/. The WebAssembly export has no plans folder,
+    # so it uses the bundled example and cannot save (read-only).
+    try:
+        PLAN_DIR = Path(__file__).resolve().parent / "plans"
+    except NameError:
+        PLAN_DIR = Path("plans")
+    EDITABLE = PLAN_DIR.is_dir()
     return (
+        EDITABLE,
+        EXAMPLE_PLAN,
         PLAN_DIR,
         PlanTimeline,
         annual,
         coverage,
         load_plan,
+        load_plan_text,
         mo,
         plan_from_dict,
         plan_to_dict,
@@ -36,8 +57,8 @@ def _():
 
 
 @app.cell
-def _(PLAN_DIR, mo):
-    plan_files = sorted(p.name for p in PLAN_DIR.glob("*.yaml"))
+def _(EDITABLE, PLAN_DIR, mo):
+    plan_files = sorted(p.name for p in PLAN_DIR.glob("*.yaml")) if EDITABLE else ["example.yaml"]
     plan_picker = mo.ui.dropdown(options=plan_files, value=plan_files[0], label="Plan")
     horizon_year = mo.ui.slider(start=2030, stop=2080, step=1, value=2050, label="Horizon (year)")
     real_toggle = mo.ui.switch(value=False, label="Real (inflation-adjusted) dollars")
@@ -48,9 +69,12 @@ def _(PLAN_DIR, mo):
 
 @app.cell
 def _(
+    EDITABLE,
+    EXAMPLE_PLAN,
     PLAN_DIR,
     PlanTimeline,
     load_plan,
+    load_plan_text,
     mo,
     plan_picker,
     plan_to_dict,
@@ -58,7 +82,11 @@ def _(
 ):
     # Re-creating the widget resets it to the file on disk (picker change or reset).
     _ = reset_button.value
-    timeline = mo.ui.anywidget(PlanTimeline(plan=plan_to_dict(load_plan(PLAN_DIR / plan_picker.value))))
+    if EDITABLE:
+        _start = plan_to_dict(load_plan(PLAN_DIR / plan_picker.value))
+    else:
+        _start = plan_to_dict(load_plan_text(EXAMPLE_PLAN))
+    timeline = mo.ui.anywidget(PlanTimeline(plan=_start))
     timeline
     return (timeline,)
 
@@ -79,14 +107,17 @@ def _(mo, plan_from_dict, timeline):
 
 
 @app.cell
-def _(PLAN_DIR, mo, plan, plan_picker, save_plan):
+def _(EDITABLE, PLAN_DIR, mo, plan, plan_picker, save_plan):
     _path = PLAN_DIR / plan_picker.value
     save_button = mo.ui.button(
         label="Save plan to YAML",
         kind="success",
         on_click=lambda _: save_plan(plan, _path),
     )
-    save_button
+    _note = mo.md("") if EDITABLE else mo.md(
+        "*Read-only copy. Changes are not saved. Run the app locally to save plans.*"
+    )
+    mo.hstack([save_button, _note]) if EDITABLE else _note
     return
 
 

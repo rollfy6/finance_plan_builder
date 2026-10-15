@@ -17,6 +17,7 @@ from typing import Optional
 
 import yaml
 
+from fpb._embedded import TAX_TABLES
 from fpb.money import ONE, q
 
 DATA_DIR = Path(__file__).resolve().parent / "data"
@@ -66,12 +67,13 @@ class TaxTables:
 
     @classmethod
     def load(cls, directory: Path = DATA_DIR) -> "TaxTables":
-        files = sorted(directory.glob("us_federal_*.yaml"))
-        with_data = []
-        for f in files:
-            with open(f, "r", encoding="utf-8") as fh:
-                with_data.append(_parse(yaml.safe_load(fh)))
-        return cls(with_data)
+        """Load tables from ``directory``, or from the bundled copies if it is absent."""
+        files = sorted(directory.glob("us_federal_*.yaml")) if directory.is_dir() else []
+        if files:
+            texts = [f.read_text(encoding="utf-8") for f in files]
+        else:
+            texts = list(TAX_TABLES.values())
+        return cls([_parse(yaml.safe_load(t)) for t in texts])
 
     def for_year(self, year: int, inflation: Decimal) -> tuple[TaxYear, Decimal]:
         """Return the table to use and the indexing factor applied to its dollar amounts.

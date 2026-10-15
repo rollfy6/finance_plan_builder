@@ -5,3 +5,7 @@ __pycache__/
 *.tmp
 .DS_Store
 __marimo__/
+
+# Private household data: never commit
+*.private.json
+plans/private/

@@ -54,6 +54,13 @@ def plan_from_dict(data: dict[str, Any]) -> Plan:
     return Plan.model_validate(_from_plain(data))
 
 
+def load_plan_text(text: str) -> Plan:
+    data = yaml.safe_load(text)
+    if not isinstance(data, dict):
+        raise ValueError("top level must be a mapping")
+    return plan_from_dict(data)
+
+
 def load_plan(path: str | Path) -> Plan:
     with open(path, "r", encoding="utf-8") as fh:
         data = yaml.safe_load(fh)
